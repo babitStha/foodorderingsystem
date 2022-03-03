@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Menu
+{% endblock title %}
+{% block body %}
+    {% include 'includes/header1.html' %}
+    {% include 'includes/messages.html' %}
+    <div class="container">
+        <section id="searchbar" class="mt-5 pt-5  mb-4">
+            <form class="searchbar"method ="GET" action="{% url 'menu' %}">
+                <div class="row height d-flex justify-content-center align-items-center">
+                    <div class="col-md-6">
+                        <div class="form d-flex justify-content-center align-items-center mt-5">
+                            <input type="text"
+                                   class="form-control form-input"
+                                   placeholder=" Search Your Favoutite Food"
+                                   name="searchQuery" value="{{searchQuery}}">
+                            <button type="submit" class="btn btn-success mx-2 px-3">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+        <div class="row">
+            <div class="col-12 col-sm-3">
+                <div class="card bg-light mb-3">
+                    <div class="card-header bg-primary text-white text-uppercase">
+                        <i class="fa fa-list"></i> Categories
+                    </div>
+                    <ul class="list-group category_block">
+                        {% for category in categories %}
+                            <li class="list-group-item">
+                                <a href="?category={{category.tag}}">{{ category.tag }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    {% for food in foods %}
+                        <div class="col-md-6 col-lg-6 mb-4">
+                            <div class="card">
+                                <img class="card-img-top" src="{{ food.imageURL }}" alt="Card image cap">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ food.name }}</h4>
+                                    <p class="card-text">
+                                    </p>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5>
+                                                <strong>@RS {{ food.price }}</strong>
+                                            </h5>
+                                        </div>
+                                        <div class="col">
+                                            <button data-food="{{food.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                    <p class="text-center">Opps! No Foods Found</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+{% endblock body %}

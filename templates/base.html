@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon"
+              href="{% static 'images/favicon.ico' %} "
+              type="image/x-icon">
+        <link rel="stylesheet"
+              href="{% static 'bootstrap5/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+        <title>
+            {% block title %}
+            {% endblock title %}
+        </title>
+        <script type="text/javascript">
+        var user = "{{request.user}}"
+        function getToken(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getToken('csrftoken')
+        </script>
+    </head>
+    <body>
+        {% block body %}
+        {% endblock body %}
+        <script src="{% static 'bootstrap5/js/bootstrap.bundle.js' %}"></script>
+        <script src="{% static '/js/script.js' %}"></script>
+    </body>
+</html>

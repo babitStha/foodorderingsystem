@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Food Ordering System
+{% endblock title %}
+{% block body %}
+    {% include 'includes/header1.html' %}
+    {% include "includes/messages.html" %}
+    <div class="hero bg-dark">
+                <h1 class="text-white">Order Your Favourite Food Now</h1>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="#feature-food" type="button"
+                            class="btn btn-success btn-lg px-4 me-sm-3 fw-bold">Order Now</a>
+                </div>
+    </div>
+
+    <section id="feature-food">
+        <h1 class="text-center">
+            Our Featured Foods
+        </h1>
+        <div class="container">
+
+           <div class="row">
+               {% for food in featured_foods %}
+               <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="card my-3">
+                    <img src="{{food.imageURL}}" class="card-img-top" alt="..."
+                    style="height:150px">
+                    <div class="card-body">
+                      <h5 class="card-title">{{food.name}}</h5>
+                      <p class="card-text">
+                          <i>@ RS {{food.price}}</i>
+                      </p>
+                      <button data-food="{{food.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                    </div>
+                  </div>
+               </div>
+               {% endfor %}
+           </div>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'menu' %}" class="btn btn-success btn-lg mt-4">Browse More Food</a>
+
+        </div>
+    </section>
+    <section id="about-us">
+        <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 class='text-success'>Welcome!</h1>
+                <h2>Know More About Us</h2>
+                <hr>
+                <p>The online food ordering system is a system for ordering a food remotely. It overcomes the demerits of the manual hotel or mess system and the old-fashioned queuing system. This system enhances the ready-made foods to the people.</p>
+                <p>The user can place orders for the food items of their like from the list. The payment can be made online or pay-on-delivery system. The users details are maintained confidentially because it maintains a separate account for each user. An id and password are provided for each user.</p>
+    
+            </div>
+            <div class="col-md-6">
+                <img src="{% static 'images/aboutus.jpg' %}" class="aboutus-image" "alt="" style="width:50vw">
+            </div>
+        </div>
+    </div>
+    </section>
+    
+    {% include 'includes/footer.html' %}
+{% endblock body %}

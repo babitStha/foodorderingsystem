@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Register
+{% endblock title %}
+{% block body %}
+    {% include 'includes/header1.html' %}
+    {% include 'includes/messages.html' %}
+    <section class="vh-100">
+        <div class="container h-100 mt-5 pt-3">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-9">
+                    <div class="card" style="border-radius: 15px;">
+                        <div class="card-body">
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                {% for field in form %}
+                                    <div class="row align-items-center pt-2 pb-2">
+                                        <div class="col-md-3 ps-5">
+                                            <h6 class="mb-0">{{ field.label }}</h6>
+                                        </div>
+                                        <div class="col-md-9 pe-5">{{ field }}</div>
+                                    </div>
+                                    {% for error in field.errors %}
+                                        <div class="alert form-text">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                    <hr class="mx-n3">
+                                {% endfor %}
+                                <div style="display:flex; justify-content:space-between; margin: 0 2rem">
+                                    <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                                    <p>
+                                        Already a member <strong>
+                                        <a href="{% url 'login' %}">Login Here</a>
+                                    </div>
+                                </strong>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}

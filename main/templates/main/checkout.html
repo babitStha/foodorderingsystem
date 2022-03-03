@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Checkout
+{% endblock title %}
+{% block body %}
+    {% include 'includes/header1.html' %}
+    {% include 'includes/messages.html' %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="box-element">
+                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+                    <hr>
+                    <h3>Order Summary</h3>
+                    <hr>
+                    {% for item in items %}
+                        <div class="cart-row">
+                            <div style="flex:2">
+                                <img class="row-image" src="{{ item.food.imageURL }}">
+                            </div>
+                            <div style="flex:2">
+                                <p>
+                                    {{ item.food.name }}
+                                </p>
+                            </div>
+                            <div style="flex:1">
+                                <p>
+                                    ${{ item.food.price|floatformat:2 }}
+                                </p>
+                            </div>
+                            <div style="flex:1">
+                                <p>
+                                    x{{ item.quantity }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <h5>
+                        Items:<strong>{{ order.get_cart_items }}</strong>
+                    </h5>
+                    <h5>
+                        Total: <strong>Rs {{ order.get_cart_total|floatformat:2 }}</strong>
+                    </h5>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="box-element" id="form-wrapper">
+                    <form id="form pt-5">
+                        <div id="user-info">
+                            <div class="form-field">
+                                <label class="form-label" for="name">Name</label>
+                                <input required
+                                       class="form-control"
+                                       type="text"
+                                       name="name"
+                                       value="{{ request.user.first_name }} {{ request.user.last_name }}">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label" for="email">Email</label>
+                                <input required
+                                       class="form-control"
+                                       type="email"
+                                       name="email"
+                                       value="{{ request.user.email }}">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="">
+                            <p class='text-center lead'>
+                                Receiving Option
+                            </p>
+                            <hr>
+                            <div class="form-check">
+                                <input class="form-radio-input"
+                                       type="radio"
+                                       value="delivery"
+                                       name="receivingOption"
+                                       id="delivery"
+                                       checked>
+                                <label class="form-check-label" for="delivery">Delivery</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-radio-input"
+                                       type="radio"
+                                       value="selfReceive"
+                                       id="selfReceive"
+                                       name="receivingOption">
+                                <label class="form-check-label" for="selfReceive">Self Receive</label>
+                            </div>
+                        </div>
+                        <div id="delivery-info">
+                            <hr>
+                            <p class="lead">
+                                Delivery Information:
+                            </p>
+                            <hr>
+                            <div class="form-field">
+                                <label class="form-label" for="address">Address</label>
+                                <input class="form-control alter-required"
+                                       type="text"
+                                       name="address"
+                                       value="{{ request.user.address }}">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label" for="street">Street</label>
+                                <input class="form-control alter-required"
+                                       type="text"
+                                       name="street"
+                                       placeholder="Nearest Street..">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label" for="contact">Contact No</label>
+                                <input class="form-control alter-required"
+                                       type="text"
+                                       name="contact"
+                                       value="{{ request.user.contact }}">
+                            </div>
+                            <p class="text-center">
+                                <small>Delivery is available only for the targeted areas with no charges.</small>
+                            </p>
+                        </div>
+                        <hr>
+                        <div id="payment-info">
+                            <small>Payment Options</small>
+                            <select class="form-select" name="paymentMethod">
+                                <option value="cash on delivery">
+                                    Cash On Delivery
+                                </option>
+                                <option value="esewa" selected>
+                                    Esewa
+                                </option>
+                                <option value="khalti">
+                                    Khalti
+                                </option>
+                            </select>
+                        </div>
+                        <input id="form-button"
+                               class="btn btn-success btn-block my-3"
+                               type="submit"
+                               value="Continue">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+		const deliveryinfo = document.getElementById('delivery-info')
+		const required = document.querySelectorAll(".alter-required")
+		
+		function showDeliveryInfo(){
+			if(document.getElementById('delivery').checked){
+				deliveryinfo.classList.remove('hidden')
+				required.forEach(field=>{
+					field.required = true
+				})
+				console.log("hidden class removed")
+			}else{
+				deliveryinfo.classList.add('hidden')
+				required.forEach(field=>{
+					field.required = false
+				})
+				console.log("hidden class added")
+			}
+		}
+
+		const radioButtons = document.querySelectorAll('input[type="radio"]')
+		console.log(radioButtons)
+radioButtons.forEach(radio => {
+  radio.addEventListener('click', showDeliveryInfo);
+});
+	
+    </script>
+{% endblock body %}

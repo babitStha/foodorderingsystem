@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Login : Food Ordering System
+{% endblock title %}
+
+{% block body %}
+{% include 'includes/header1.html' %}
+{% include 'includes/messages.html' %}
+<div class="row height d-flex justify-content-center align-items-center" style="height:90vh;">
+    <div class="col-4">
+        <form method="POST" action="{% url 'login' %}">
+          {% csrf_token %}
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" name='email'>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name='password'>
+            </div>
+            <div class="mb-3">
+              <p>Not a member <a href="{% url 'register' %}">Register Now</a></p>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+    </div>
+</div>
+{% endblock body %}
