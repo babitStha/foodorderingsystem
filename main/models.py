@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.mail import send_mail
 from uuid import uuid4 
 # Create your models here.
 class Category(models.Model):
@@ -41,8 +42,23 @@ class Order(models.Model):
     )
     transaction_id = models.UUIDField(default=uuid4, primary_key=True, unique=True, editable=False)
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    date_ordered = models.DateField(auto_now_add=True)
+    date_ordered = models.DateField(auto_now
+    =True)
     status = models.CharField(max_length=20, default="Pending", choices=STATUS)
+
+    def save(self, *args, **kwargs):
+        try:
+            send_mail(
+        'Welcome To Food Ordering System',
+        self.status,
+        settings.EMAIL_HOST_USER,
+        [self.customer.email],
+        fail_silently=False,
+        )
+        except:
+            pass
+        super(Order, self).save(*args, **kwargs)
+            
 
     @property
     def get_cart_total(self):
