@@ -1,4 +1,3 @@
-
 def prepareMessageFor(name):
     template = """
 Mr/Mrs [name], Welcome to Food Ordering System!

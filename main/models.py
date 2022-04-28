@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
 from uuid import uuid4 
+from .helpers import orderCancelMessage
 # Create your models here.
 class Category(models.Model):
     tag = models.CharField(max_length=50, unique=True)
@@ -42,22 +43,40 @@ class Order(models.Model):
     )
     transaction_id = models.UUIDField(default=uuid4, primary_key=True, unique=True, editable=False)
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    date_ordered = models.DateField(auto_now
+    date_ordered = models.DateField(auto_now_add
     =True)
     status = models.CharField(max_length=20, default="Pending", choices=STATUS)
 
     def save(self, *args, **kwargs):
+        super(Order, self).save(*args, **kwargs)
         try:
-            send_mail(
-        'Welcome To Food Ordering System',
-        self.status,
-        settings.EMAIL_HOST_USER,
-        [self.customer.email],
-        fail_silently=False,
-        )
+            if self.status == "Cancelled":
+                send_mail(
+            'Your Order Has Been Cancelled.',
+            orderCancelMessage(f'{self.customer.first_name} {self.customer.last_name}'),
+            settings.EMAIL_HOST_USER,
+            [self.customer.email],
+            fail_silently=False,
+            )
+            elif self.status == "Ordered":
+                send_mail(
+            'Your Order Has Been Placed.',
+            self.status,
+            settings.EMAIL_HOST_USER,
+            [self.customer.email],
+            fail_silently=False,
+            )
+            elif self.status == "Delivered":
+                send_mail(
+            'Your Order Has Been Delivered.',
+            self.status,
+            settings.EMAIL_HOST_USER,
+            [self.customer.email],
+            fail_silently=False,
+            )
         except:
             pass
-        super(Order, self).save(*args, **kwargs)
+        
             
 
     @property
@@ -98,6 +117,11 @@ class Delivery(models.Model):
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     address = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+    receivingOption = models.CharField(max_length=200)
+    street = models.CharField(max_length=200)
+    contact:models.CharField(max_length=200)
 
     def __str__(self):
         return f"{self.address}"

@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from .models import Category, Food, Order, OrderItem
+from django.shortcuts import render, redirect
+from tomlkit import item
+from .models import Category, Food, Order, OrderItem, Delivery
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -38,13 +39,39 @@ def cart(request):
         order, created = Order.objects.get_or_create(customer=customer,status="Pending")
         items = order.orderitem_set.all()
     else:
+        try:
+            cart = json.loads(request.COOKIES['cart'])
+        except:
+            cart = {}
+        print(cart)
         items = []
         order = {
-            'get_cart_total' : 0
+            'get_cart_total' : 0,
+            'get_cart_item' : 0,
         }
+        cartItem = order['get_cart_item']
+        for i in cart:
+            cartItem += cart[i]['quantity']
+            food = Food.objects.get(id=i)
+            total = (food.price *cart[i]['quantity'])
+            order['get_cart_item'] += cart[i]['quantity']
+            order['get_cart_total'] += total
+            print(order['get_cart_item'] )
+            item = {
+                'food':{
+                    'id':food.id,
+                    'name':food.name,
+                    'price': food.price,
+                    'imageURL':food.imageURL,
+                },
+                'quantity':cart[i]['quantity'],
+                'get_total':total
+            }
+            items.append(item)
+        
     context = {
         'items' : items,
-        'order' : order
+        'order' : order,
     }
 
     return render(request, "main/cart.html", context)
@@ -88,6 +115,7 @@ def orders(request):
 
     return render(request, "main/orders.html", context)
 
+@login_required(login_url='login')
 def checkout(request):
     if request.user.is_authenticated:
         customer = request.user
@@ -106,3 +134,22 @@ def checkout(request):
     return render(request, "main/checkout.html", context)
 
 
+def process_order(request):
+    data = json.loads(request.body)
+    customer = request.user
+    order, created = Order.objects.get_or_create(customer=customer,status="Pending")
+
+    order.status="Ordered"    
+
+    order.save()
+    return render(request,'main/orders.html',{})
+
+def cancel(request):
+    data = json.loads(request.body)
+    orderId = data['orderId']
+    food = data['item']
+    order = Order.objects.get(transaction_id=orderId)
+    item = OrderItem.objects.get(order=order, food=food)
+    item.delete()
+    return JsonResponse("Order cancelled", safe=False)
+    

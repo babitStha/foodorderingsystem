@@ -46,7 +46,8 @@
             </div>
             <div class="col-lg-6">
                 <div class="box-element" id="form-wrapper">
-                    <form id="form pt-5">
+                    <form id="form pt-5" method="POST">
+                        {% csrf_token %}
                         <div id="user-info">
                             <div class="form-field">
                                 <label class="form-label" for="name">Name</label>
@@ -127,18 +128,13 @@
                                 <option value="cash on delivery">
                                     Cash On Delivery
                                 </option>
-                                <option value="esewa" selected>
-                                    Esewa
-                                </option>
-                                <option value="khalti">
-                                    Khalti
-                                </option>
                             </select>
                         </div>
-                        <input id="form-button"
+                        <input id="submitbtn"
                                class="btn btn-success btn-block my-3"
                                type="submit"
-                               value="Continue">
+                               value="Continue"
+                               >
                     </form>
                 </div>
             </div>
@@ -163,12 +159,43 @@
 				console.log("hidden class added")
 			}
 		}
+        document.getElementById('submitbtn').addEventListener('click',submitFormData )
+        const form = document.querySelector('form')
+        function submitFormData(){
+            var deliveryInfo ={
+                'name':form.name.value,
+                'email':form.email.value,
+                'address':form.address.value,
+                'receivingOption':form.receivingOption.value,
+                'street':form.street.value,
+                'contact':form.contact.value,
 
+            }
+        var url ='/process_order/'
+        fetch(url, {
+            method:'POST',
+            headers:{
+                'Content-Type':'applicaiton/json',
+                'X-CSRFToken':csrftoken,
+            }, 
+            body:JSON.stringify({'deliveryInfo':deliveryInfo}),
+            
+        })
+        .then((response) => {
+            return response.json();
+         })
+        .then((data) => {
+            console.log('Success:', data)
+            alert('Order completed')
+            window.location.href = "{% url 'orders' %}"
+            })
+    }
 		const radioButtons = document.querySelectorAll('input[type="radio"]')
-		console.log(radioButtons)
-radioButtons.forEach(radio => {
-  radio.addEventListener('click', showDeliveryInfo);
-});
+        const submitbtn = document.querySelector('#submitbtn')
+        
+        radioButtons.forEach(radio => {
+            radio.addEventListener('click', showDeliveryInfo);
+        });
 	
     </script>
 {% endblock body %}

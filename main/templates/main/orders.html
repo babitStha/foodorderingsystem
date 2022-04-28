@@ -33,7 +33,7 @@
                             <strong>Status</strong>
                         </div>
                         <div style="flex:1">
-                            <strong>Date Ordered</strong>
+                            <strong>Action</strong>
                         </div>
                     </div>
                     {% for order in orders %}
@@ -69,7 +69,14 @@
                             </div>
                             <div style="flex:1">
                                 <p>
-                                    {{ order.date_ordered|timesince}} ago
+                                    {% if order.status == "Ordered" %}
+                                    <button class="btn btn-warning cancelBtn" data-item={{item.food.id}}
+                                    data-order={{item.order.transaction_id}}
+                                    >Cancel</button>
+                                    
+                                    {% else %}
+                                    <p class="lead">Order already Prepared.</p>
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
@@ -84,6 +91,32 @@
     </div>
     
        
-
+<script>
+    var cancelBtn = document.querySelectorAll(".cancelBtn")
+    cancelBtn.forEach(order => {
+        order.addEventListener('click', cancelOrderItem);
+    });
+    function cancelOrderItem(foodId, action){
+        console.log('User is authenticated, sending data...')
+    
+            var url = '/cancel/'
+    
+            fetch(url, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':csrftoken,
+                }, 
+                body:JSON.stringify({'orderId':this.dataset.order, 'item':this.dataset.item})
+            })
+            .then((response) => {
+               return response.json();
+            })
+            .then((data) => {
+                console.log(data)
+                location.reload()
+            });
+    }
+</script>
    
 {% endblock body %}
