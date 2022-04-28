@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
 from uuid import uuid4 
-from .helpers import orderCancelMessage
+from .helpers import orderCancelMessage, orderPlacedMessage,orderDeliveredMessage
 # Create your models here.
 class Category(models.Model):
     tag = models.CharField(max_length=50, unique=True)
@@ -61,7 +61,7 @@ class Order(models.Model):
             elif self.status == "Ordered":
                 send_mail(
             'Your Order Has Been Placed.',
-            self.status,
+            orderPlacedMessage(f"{self.customer.first_name} {self.customer.last_name}"),
             settings.EMAIL_HOST_USER,
             [self.customer.email],
             fail_silently=False,
@@ -69,7 +69,7 @@ class Order(models.Model):
             elif self.status == "Delivered":
                 send_mail(
             'Your Order Has Been Delivered.',
-            self.status,
+            orderDeliveredMessage(f'{self.customer.first_name} {self.customer.last_name}'),
             settings.EMAIL_HOST_USER,
             [self.customer.email],
             fail_silently=False,

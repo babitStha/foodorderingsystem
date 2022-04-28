@@ -13,10 +13,26 @@ Thank You,
 
 def orderPlacedMessage(name):
     template = """
-                      Your Ordrer has been cancelled!
+                      Your Ordrer has been Placed!
 Hi [name],
 
 Your Order has been Placed.
+ You can order more foods from our site.
+
+Thank You For Choosing Us,
+The Food Ordering System TEAM
+    """
+    PLACEHOLDER = "[name]"
+    message = template.replace(PLACEHOLDER, name)
+    return message
+
+
+def orderDeliveredMessage(name):
+    template = """
+                      Your Ordrer has been Delivered!
+Hi [name],
+
+Your Order has been Delivered.
  You can order more foods from our site.
 
 Thank You For Choosing Us,
